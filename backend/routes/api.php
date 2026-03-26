@@ -23,7 +23,7 @@ Route::post('/login', function (Request $request) {
     }
 
     return response()->json(['message' => 'Invalid credentials'], 401);
-});
+})->name('login');
 
 // ── Protected Routes (Admin Only) ────────────────────────────────
 Route::prefix('v1')->middleware(AdminAuth::class)->group(function () {
