@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-green: #4ADE80;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    @apply bg-[#0A0A0A] text-gray-100 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/[0.03] border border-white/10 backdrop-blur-md;
+  }
+
+  .btn-primary {
+    background: var(--color-green);
+    @apply text-black font-bold px-4 py-2 rounded-xl transition-all hover:opacity-90 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-white/5 border border-white/10 text-white font-semibold px-4 py-2 rounded-xl transition-all hover:bg-white/10 active:scale-95;
+  }
+
+  .input-field {
+    @apply w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30
+           focus:outline-none focus:border-green-400/50 focus:ring-1 focus:ring-green-400/20 transition-all;
+  }
+
+  select.input-field option {
+    background: #1a1a1a;
+    color: white;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    @apply rounded-3xl;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+  }
+}
