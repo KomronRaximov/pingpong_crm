@@ -2,9 +2,26 @@ import axios from 'axios';
 import type { Court, CourtSession, Product, Reservation, Stats } from '../types';
 
 const api = axios.create({
+  // Note: the login route is at /api/v1/login but standard v1 routes are also under /api/v1
   baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1',
   headers: { 'Content-Type': 'application/json' },
 });
+
+// ── Auth Interceptor ──────────────────────────────────────────
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('admin_token');
+  if (token) {
+    config.headers['X-Admin-Token'] = token;
+  }
+  return config;
+});
+
+// ── Auth ──────────────────────────────────────────────────────
+export const login = async (username: string, password: string) => {
+  // Directly hitting the login endpoint (which is at the root of the prefix in api.php)
+  const { data } = await api.post('/login', { username, password });
+  return data;
+};
 
 // ── Courts ──────────────────────────────────────────────────
 export const getCourts = async (): Promise<Court[]> => {

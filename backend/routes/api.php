@@ -3,8 +3,30 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CourtController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Middleware\AdminAuth;
+use Illuminate\Http\Request;
 
-Route::prefix('v1')->group(function () {
+// ── Login Route (Public) ──────────────────────────────────────
+Route::post('/v1/login', function (Request $request) {
+    $data = $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
+
+    if ($data['username'] === env('ADMIN_USERNAME') && $data['password'] === env('ADMIN_PASSWORD')) {
+        // Return a simple token (same as middleware checks)
+        $token = md5($data['username'] . $data['password']);
+        return response()->json([
+            'token' => $token,
+            'user'  => ['name' => 'Administrator']
+        ]);
+    }
+
+    return response()->json(['message' => 'Invalid credentials'], 401);
+});
+
+// ── Protected Routes (Admin Only) ────────────────────────────────
+Route::prefix('v1')->middleware(AdminAuth::class)->group(function () {
 
     // Courts CRUD
     Route::get('/courts',          [CourtController::class, 'index']);
@@ -14,14 +36,14 @@ Route::prefix('v1')->group(function () {
     Route::delete('/courts/{id}',  [CourtController::class, 'destroy']);
 
     // Session management
-    Route::get('/sessions',             [CourtController::class, 'history']); // New: list all sessions
+    Route::get('/sessions',             [CourtController::class, 'history']);
     Route::post('/courts/{id}/start',   [CourtController::class, 'startSession']);
     Route::post('/courts/{id}/stop',    [CourtController::class, 'stopSession']);
     Route::get('/courts/{id}/session',  [CourtController::class, 'activeSession']);
 
     // Product ordering per court session
     Route::post('/courts/{id}/order',          [CourtController::class, 'addOrder']);
-    Route::post('/courts/{id}/order/decrease', [CourtController::class, 'decreaseOrder']); // New
+    Route::post('/courts/{id}/order/decrease', [CourtController::class, 'decreaseOrder']);
 
     // Products CRUD
     Route::get('/products',         [ProductController::class, 'index']);

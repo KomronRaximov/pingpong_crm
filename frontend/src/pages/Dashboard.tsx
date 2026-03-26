@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   LayoutGrid, Calendar, Package, Activity, History, Printer,
   ChevronRight, Search, Plus, X, Edit2, Trash2, Check, Minus,
-  DollarSign, Play, Square, TrendingUp
+  DollarSign, Play, Square, TrendingUp, Lock
 } from 'lucide-react';
 import type { Court, CourtSession, Product, Reservation, Stats, OrderItem } from '../types';
 import {
@@ -48,7 +48,7 @@ const DigitalClock: React.FC = () => {
 type Page = 'overview' | 'products' | 'reservations' | 'history' | 'analytics';
 
 // ── Main App ──────────────────────────────────────────────────────────────
-export const Dashboard: React.FC = () => {
+export const Dashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const [page, setPage] = useState<Page>('overview');
   const [courts, setCourts] = useState<Court[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -221,14 +221,21 @@ export const Dashboard: React.FC = () => {
           ))}
         </nav>
 
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }} className="pt-4 mt-4">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer">
-            <div style={{ background: '#4ADE80', borderRadius: '50%' }} className="w-8 h-8 flex items-center justify-center text-black font-bold text-sm">A</div>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }} className="pt-4 mt-4 space-y-2">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+            <div style={{ background: '#4ADE80', borderRadius: '50%' }} className="w-8 h-8 flex items-center justify-center text-black font-bold text-sm shadow-inner shadow-black/20 group-hover:scale-105 transition-transform">A</div>
             <div>
               <p className="text-xs font-bold">Administrator</p>
               <p className="text-[10px] text-white/30 uppercase tracking-tighter">Premium Access</p>
             </div>
           </div>
+          
+          <button 
+            onClick={onLogout}
+            className="w-full flex items-center gap-3 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-500/50 hover:text-red-500 hover:bg-red-500/5 transition-all rounded-lg"
+          >
+            <Lock size={12} /> Sign Out Terminal
+          </button>
         </div>
       </aside>
 
