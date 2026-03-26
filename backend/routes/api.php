@@ -7,7 +7,7 @@ use App\Http\Middleware\AdminAuth;
 use Illuminate\Http\Request;
 
 // ── Login Route (Public) ──────────────────────────────────────
-Route::post('/v1/login', function (Request $request) {
+Route::post('/login', function (Request $request) {
     $data = $request->validate([
         'username' => 'required|string',
         'password' => 'required|string',
