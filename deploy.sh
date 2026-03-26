@@ -68,7 +68,9 @@ if [ ! -f ".env" ]; then
     php artisan key:generate
 fi
 touch database/database.sqlite
+php8.2 artisan optimize:clear
 php8.2 artisan migrate --force
+
 
 # 4. Setup Frontend
 cd ../frontend
@@ -85,7 +87,7 @@ npm run build
 
 # 5. Config Nginx for Port 8003
 echo "⚙️ Configuring Nginx..."
-cat <<EOF > /etc/nginx/sites-available/pingpong_crm
+cat <<'EOF' > /etc/nginx/sites-available/pingpong_crm
 server {
     listen 8003;
     server_name _;
@@ -94,22 +96,23 @@ server {
     index index.html;
 
     location / {
-        try_files \$uri \$uri/ /index.html;
+        try_files $uri $uri/ /index.html;
     }
 
-    location /api {
+    location ^~ /api {
         alias /var/www/pingpong_crm/backend/public;
-        try_files \$uri \$uri/ @api;
+        try_files $uri $uri/ @api;
         
         location ~ \.php$ {
-            include snippets/fastcgi-php.conf;
+            include fastcgi_params;
             fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
             fastcgi_param SCRIPT_FILENAME /var/www/pingpong_crm/backend/public/index.php;
+            fastcgi_param SCRIPT_NAME /index.php;
         }
     }
 
     location @api {
-        rewrite /api/(.*)$ /api/index.php?\$1 last;
+        rewrite /api/(.*)$ /api/index.php last;
     }
 }
 EOF
