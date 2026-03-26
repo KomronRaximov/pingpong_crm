@@ -69,7 +69,7 @@ if [ ! -f ".env" ]; then
 fi
 touch database/database.sqlite
 php8.2 artisan optimize:clear
-php8.2 artisan migrate --force
+php8.2 artisan migrate:fresh --force --seed
 
 
 # 4. Setup Frontend
